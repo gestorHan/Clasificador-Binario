@@ -42,48 +42,8 @@ num = 100
 images = X_train [: num] 
 labels = y_train [: num]
 
-num_row = 2
-num_col = 5
-'''
-plt.figure(figsize=(10, 5))
-# plot images
-for i in range(num):
-    fig, axes = plt.subplot(num_row, num_col)
-    axes.imshow(images[i].reshape(28, 28),cmap='gray')
-plt.tight_layout()
-plt.show()
-'''
 for i in range(100):
     l1_plot = plt.subplot(10, 10, i + 1)#Num de filas,Num de columnas, indice 
     l1_plot.imshow(images[i].reshape(28, 28),cmap=plt.cm.gray)
 
 plt.show()
-
-
-'''# Turn up tolerance for faster convergence
-clf = LogisticRegression(
-    C=50. / train_samples, penalty='l1', solver='saga', tol=0.1
-)
-clf.fit(X_train, y_train)
-sparsity = np.mean(clf.coef_ == 0) * 100
-score = clf.score(X_test, y_test)
-# print('Best C % .4f' % clf.C_)
-print("Sparsity with L1 penalty: %.2f%%" % sparsity)
-print("Test score with L1 penalty: %.4f" % score)
-
-coef = clf.coef_.copy()
-plt.figure(figsize=(10, 5)) #Ancho, alto en pulgadas.
-scale = np.abs(coef).max()
-for i in range(10):
-    l1_plot = plt.subplot(2, 5, i + 1)#Num de filas,Num de columnas, indice 
-    l1_plot.imshow(coef[i].reshape(28, 28), interpolation='nearest',
-                   cmap=plt.cm.RdBu, vmin=-scale, vmax=scale)
-    l1_plot.set_xticks(())
-    l1_plot.set_yticks(())
-    l1_plot.set_xlabel('Class %i' % i)
-plt.suptitle('Classification vector for...')
-
-run_time = time.time() - t0
-print("Example run in %.3f s" % run_time)
-plt.show()
-'''
