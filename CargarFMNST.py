@@ -76,3 +76,24 @@ for i in range(784):
 for i in range(300,400):
     print(images[i][25])
 '''
+#Generar matriz Gaussina de 10x784
+mu, sigma = 0, 1 # mean and standard deviation
+
+A = np.zeros((10, 784))
+for i in range(10):
+    s = np.random.normal(mu, sigma, 784)
+    for j in range(784):
+        A[i][j] = A[i][j] +s[j]
+
+#Hallaremos Q = A*X
+#Multiplicamos A*X
+Q = np.dot(A,images)
+
+#Aplicaremos la funcion Signo a toda la matriz Q:
+for i in range(10):
+    for j in range(60):
+        if (Q[i][j]<0):
+            Q[i][j]=-1
+        if(0<=Q[i][j]):
+            Q[i][j]=1
+print(Q)
