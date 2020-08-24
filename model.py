@@ -28,39 +28,70 @@ def generar_vector_t (submatrix_lambda:list):
         vector_t.append (bin_to_number(column))
     return vector_t
 
-def tabla_conteo (vector_t , labels ):
-    pares = np.array ([vector_t, labels])
-    pares_unicos = np.unique(pares.T , return_counts=True)
-    print ("Pares :" , pares.T)
-    print ("Conteo ? : " , pares_unicos)
 
+def tablas_conteo(vector_t, labels, level):
+    pares_unicos, conteo = np.unique(
+        np.array([vector_t, labels]).T
+        , axis= 0, return_counts=True
+    )
+    tablas = np.array([
+        np.zeros(2**level),
+        np.zeros(2**level)
+    ])
+
+    print("Pares unicos:" , pares_unicos)
+    print("Conteo:", conteo)
+    
+    for par_unico, conteo_actual in zip(pares_unicos, conteo):
+        tablas[par_unico[1]][par_unico[0]] = int(conteo_actual)
+    return tablas
+
+
+def tabla_indices_de_miembro(tabla_conteo , suma_conteo):
+    tabla_indices = np.array([
+        np.zeros(2**level),
+        np.zeros(2**level)
+    ])
+
+    for n_row , row in enumerate(tabla_conteo , suma_conteo):
+        for n_col , elem in enumerate (row):
+            tabla_indices[n_row][n_col] = (elem * (np.abs(suma_conteo[n_col]-2*elem))) /(suma_conteo[n_col]**2)
+    return tabla_indices
 
 def generar_tabla(bin_matrix_Q, labels, number_of_labels, lambda_actual):
     submatrix_lambda = []
     vector_t = []
-
     print ("Lambda actual : " , lambda_actual)
     for row_i in lambda_actual:
         print("Obtener la fila :" , row_i) 
         submatrix_lambda.append(bin_matrix_Q[row_i])
     vector_t = generar_vector_t(submatrix_lambda)
-    print ("El vector t:" , vector_t)
-    print ("El vector b:" , labels)
-    tabla_conteo(vector_t , labels)
+    tabla_conteo = tablas_conteo(vector_t , labels , len(lambda_actual))
+    suma_conteo = np.sum(tabla_conteo , axis=0)
+    tabla_indices = tabla_indices_de_miembro ()
+    print ("Lambda actual :\n" , lambda_actual  ," size: " ,len(lambda_actual) )
+    print ("Tabla de conteo:\n" , tabla_conteo)
+    print ("Suma de columnas:\n", suma_conteo)
+    
+    #suma_columnas = suma_columnas(pares_unicos , conteo)
+    
+    #for par_actual , cuenta in zip (pares_unicos , conteo):
+    #    index_actual = suma_columnas[0,:].index(par_actual[0]) if par_actual[0] in suma_columnas[0,:] else None
+
     return []
 
 if __name__ == "__main__":
 
     bin_matrix_Q = np.array(
         [
-            [-1, 1, 1, -1, -1, -1, -1, -1, -1, 1, ],
-            [-1, 1, -1, -1, -1, -1, -1, -1, -1, 1, ],
-            [-1, -1, 1, -1, -1, -1, -1, -1, -1, 1, ],
-            [-1, 1, 1, -1, -1, -1, -1, -1, -1, -1, ],
+            [-1, 1, 1, -1, -1, -1, -1, 1, -1, 1, ],
+            [-1, 1, -1, -1, 1, -1, 1, -1, 1, 1, ],
+            [-1, -1, 1, 1, -1, -1, -1, -1, -1, 1, ],
+            [-1, 1, 1, -1, -1, -1, -1, 1, -1, -1, ],
         ]
     )
     labels = np.array(
-        [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, ]
+        [1, 1, 1, 0, 0, 0, 1, 0, 1, 0, ]
     )
     m_parametros, n_puntos =  bin_matrix_Q.shape
     print(m_parametros)
